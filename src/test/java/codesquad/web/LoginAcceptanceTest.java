@@ -19,38 +19,34 @@ import static org.junit.Assert.assertThat;
 
 public class LoginAcceptanceTest extends AcceptanceTest{
     private static final Logger log = LoggerFactory.getLogger(UserAcceptanceTest.class);
-
-    HttpHeaders headers;
-    MultiValueMap<String, Object> params;
+    private HtmlFormDataBuilder htmlFormDataBuilder;
 
     @Before
     public void setup() {
-        headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.TEXT_HTML));
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        params = new LinkedMultiValueMap<>();
+        htmlFormDataBuilder = HtmlFormDataBuilder.urlEncodedForm();
     }
 
     @Test
     public void login_success(){
 
-        params.add("userId", "javajigi");
-        params.add("password", "test");
+        htmlFormDataBuilder.addParameter("userId", "javajigi");
+        htmlFormDataBuilder.addParameter("password", "test");
 
-        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<MultiValueMap<String, Object>>(params, headers);
+        HttpEntity<MultiValueMap<String, Object>> request = htmlFormDataBuilder.build();
         ResponseEntity<String> response = template().postForEntity("/users/login", request, String.class);
+
         assertThat(response.getStatusCode(), is(HttpStatus.FOUND));
     }
 
     @Test
     public void login_failure(){
 
-        params.add("userId", "javajigi");
-        params.add("password", "test1");
+        htmlFormDataBuilder.addParameter("userId", "javajigi");
+        htmlFormDataBuilder.addParameter("password", "test");
 
-        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<MultiValueMap<String, Object>>(params, headers);
+        HttpEntity<MultiValueMap<String, Object>> request = htmlFormDataBuilder.build();
         ResponseEntity<String> response = template().postForEntity("/users/login", request, String.class);
+
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 
