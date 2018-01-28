@@ -3,6 +3,7 @@ package codesquad.web;
 import codesquad.UnAuthenticationException;
 import codesquad.domain.Question;
 import codesquad.domain.User;
+import codesquad.dto.QuestionDto;
 import codesquad.dto.UserDto;
 import codesquad.security.LoginUser;
 import codesquad.service.QnaService;
@@ -18,10 +19,10 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @Controller
-@RequestMapping("/qnas")
+@RequestMapping("/question")
 public class QnaController {
 
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
+    private static final Logger log = LoggerFactory.getLogger(QnaController.class);
 
     @Resource(name = "qnaService")
     private QnaService qnaService;
@@ -29,6 +30,12 @@ public class QnaController {
     @GetMapping("/form")
     public String form() {
         return "/qna/form";
+    }
+
+    @PostMapping("")
+    public String create(@LoginUser User loginUser, Question question) {
+        qnaService.create(loginUser, question);
+        return "redirect:/questions";
     }
 
 }
