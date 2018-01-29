@@ -63,33 +63,36 @@ public class QnaAcceptanceTest extends AcceptanceTest {
         User loginUser = defaultUser();
         htmlFormDataBuilder.addParameter("title", "테스트 게시글1");
         htmlFormDataBuilder.addParameter("contents", "테스트 내용1");
-
         HttpEntity<MultiValueMap<String, Object>> request = htmlFormDataBuilder.build();
         ResponseEntity<String> response = basicAuthTemplate(loginUser).postForEntity("/question", request, String.class);
-
         assertThat(response.getStatusCode(), is(HttpStatus.FOUND));
     }
 
     @Test
-    public void 질문_수정_nologin() throws  Exception {
-
+    public void 질문_수정폼_열기() throws Exception {
+        User loginUser = defaultUser();
+        long id = 1;
+        ResponseEntity<String> response = basicAuthTemplate(loginUser).getForEntity(String.format("/question/%d/updateForm", id), String.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        log.debug("body : {}", response.getBody());
     }
-
 
     @Test
     public void 질문_수정_login() throws  Exception {
-
+        User loginUser = defaultUser();
+        long id = 1;
+        htmlFormDataBuilder.addParameter("title", "수정 제목1");
+        htmlFormDataBuilder.addParameter("contents", "수정 내용1");
+        HttpEntity<MultiValueMap<String, Object>> request = htmlFormDataBuilder.build();
+        ResponseEntity<String> response = basicAuthTemplate(loginUser).postForEntity(String.format("/question/%d/update", id), request, String.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.FOUND));
     }
-
-
-    @Test
-    public void 질문_삭제_nologin() throws  Exception {
-
-    }
-
 
     @Test
     public void 질문_삭제_login() throws  Exception {
-
+        User loginUser = defaultUser();
+        long id = 1;
+        ResponseEntity<String> response = basicAuthTemplate(loginUser).getForEntity(String.format("/question/%d/delete", id), String.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 }
