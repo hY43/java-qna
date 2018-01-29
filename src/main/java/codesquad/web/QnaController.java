@@ -49,7 +49,7 @@ public class QnaController {
     public String updateForm(@LoginUser User loginUser, @PathVariable long id, Model model) {
         if(qnaService.findById(id).isOwner(loginUser)){
             model.addAttribute("question", qnaService.findById(id));
-            return "/user/updateForm";
+            return "/qna/updateForm";
         }
         return "redirect:/questions";
     }
@@ -57,7 +57,7 @@ public class QnaController {
     @PostMapping("/{id}/update")
     public String update(@LoginUser User loginUser, @PathVariable long id, String title, String contents) {
         qnaService.update(loginUser, id, new Question(title, contents));
-        return "redirect:/users";
+        return "redirect:/questions";
     }
 
     @GetMapping("/{id}/delete")
@@ -67,6 +67,6 @@ public class QnaController {
         } catch (CannotDeleteException e) {
             e.printStackTrace();
         }
-        return "redirect:/users";
+        return "redirect:/questions";
     }
 }
