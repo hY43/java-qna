@@ -32,6 +32,11 @@ public class HomeController {
         return "/user/login";
     }
 
+    @GetMapping("/logout")
+    public String logout() {
+        return "redirect:/users/logout";
+    }
+
     @GetMapping("/questions")
     public String question(@PageableDefault Pageable pageable, Model model) {
         List<Question> questions = qnaService.findAll(pageable);

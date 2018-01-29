@@ -30,15 +30,20 @@ public class QnaAcceptanceTest extends AcceptanceTest {
     @Autowired
     private QuestionRepository questionRepository;
 
+    @Before
+    public void setup() {
+        htmlFormDataBuilder = HtmlFormDataBuilder.urlEncodedForm();
+    }
+
     @Test
-    public void questionList() throws Exception {
+    public void 질문_목록_보기() throws Exception {
         ResponseEntity<String> response = template().getForEntity("/questions", String.class);
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         log.debug("body : {}", response.getBody());
     }
 
     @Test
-    public void showQuestion() throws Exception {
+    public void 질문_상세_보기() throws Exception {
         long id = 1;
         ResponseEntity<String> response = template().getForEntity(String.format("/question/%d", id), String.class);
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
@@ -47,14 +52,14 @@ public class QnaAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    public void createForm() throws Exception {
-        ResponseEntity<String> response = template().getForEntity("/questions/form", String.class);
+    public void 질문_등록폼_열기() throws Exception {
+        ResponseEntity<String> response = template().getForEntity("/question/form", String.class);
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         log.debug("body : {}", response.getBody());
     }
 
     @Test
-    public void create() throws Exception {
+    public void 질문_등록() throws Exception {
         User loginUser = defaultUser();
         htmlFormDataBuilder.addParameter("title", "테스트 게시글1");
         htmlFormDataBuilder.addParameter("contents", "테스트 내용1");
@@ -63,6 +68,28 @@ public class QnaAcceptanceTest extends AcceptanceTest {
         ResponseEntity<String> response = basicAuthTemplate(loginUser).postForEntity("/question", request, String.class);
 
         assertThat(response.getStatusCode(), is(HttpStatus.FOUND));
-        assertThat(response.getHeaders().getLocation().getPath(), is("/questsion"));
+    }
+
+    @Test
+    public void 질문_수정_nologin() throws  Exception {
+
+    }
+
+
+    @Test
+    public void 질문_수정_login() throws  Exception {
+
+    }
+
+
+    @Test
+    public void 질문_삭제_nologin() throws  Exception {
+
+    }
+
+
+    @Test
+    public void 질문_삭제_login() throws  Exception {
+
     }
 }
