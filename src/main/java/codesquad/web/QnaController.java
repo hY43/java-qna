@@ -38,4 +38,9 @@ public class QnaController {
         return "redirect:/questions";
     }
 
+    @GetMapping("/{id}")
+    public String showQuestion(Question question, @PathVariable long id, Model model) {
+        model.addAttribute("question", qnaService.findById(id));
+        return "/qna/show";
+    }
 }

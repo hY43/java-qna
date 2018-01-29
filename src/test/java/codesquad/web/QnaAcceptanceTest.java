@@ -1,5 +1,6 @@
 package codesquad.web;
 
+import codesquad.domain.QuestionRepository;
 import codesquad.domain.User;
 import codesquad.domain.UserRepository;
 import org.junit.Before;
@@ -27,12 +28,21 @@ public class QnaAcceptanceTest extends AcceptanceTest {
     private HtmlFormDataBuilder htmlFormDataBuilder;
 
     @Autowired
-    private UserRepository userRepository;
+    private QuestionRepository questionRepository;
 
     @Test
     public void questionList() throws Exception {
         ResponseEntity<String> response = template().getForEntity("/questions", String.class);
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        log.debug("body : {}", response.getBody());
+    }
+
+    @Test
+    public void showQuestion() throws Exception {
+        long id = 1;
+        ResponseEntity<String> response = template().getForEntity(String.format("/question/%d", id), String.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        assertNotNull(questionRepository.findOne(id));
         log.debug("body : {}", response.getBody());
     }
 
@@ -45,20 +55,14 @@ public class QnaAcceptanceTest extends AcceptanceTest {
 
     @Test
     public void create() throws Exception {
-//        User loginUser = defaultUser();
-//        ResponseEntity<String> response = basicAuthTemplate(loginUser)
-//                .getForEntity(String.format("/users/%d/form", loginUser.getId()), String.class);
-
-        long id = 1;
-        htmlFormDataBuilder.addParameter("id", id);
+        User loginUser = defaultUser();
         htmlFormDataBuilder.addParameter("title", "테스트 게시글1");
         htmlFormDataBuilder.addParameter("contents", "테스트 내용1");
 
         HttpEntity<MultiValueMap<String, Object>> request = htmlFormDataBuilder.build();
-        ResponseEntity<String> response = template().postForEntity("/questions", request, String.class);
+        ResponseEntity<String> response = basicAuthTemplate(loginUser).postForEntity("/question", request, String.class);
 
         assertThat(response.getStatusCode(), is(HttpStatus.FOUND));
-        assertNotNull(userRepository.findOne(id));
-        assertThat(response.getHeaders().getLocation().getPath(), is("/questsions"));
+        assertThat(response.getHeaders().getLocation().getPath(), is("/questsion"));
     }
 }
