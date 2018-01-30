@@ -54,14 +54,14 @@ public class QnaController {
         return "redirect:/questions";
     }
 
-    @PostMapping("/{id}/update")
+    @PutMapping("/{id}")
     public String update(@LoginUser User loginUser, @PathVariable long id, String title, String contents) {
         qnaService.update(loginUser, id, new Question(title, contents));
         return "redirect:/questions";
     }
 
-    @GetMapping("/{id}/delete")
-    public String update(@LoginUser User loginUser, @PathVariable long id) {
+    @DeleteMapping("/{id}")
+    public String delete(@LoginUser User loginUser, @PathVariable long id) {
         try {
             qnaService.deleteQuestion(loginUser, id);
         } catch (CannotDeleteException e) {

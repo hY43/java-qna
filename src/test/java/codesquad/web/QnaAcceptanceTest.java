@@ -84,7 +84,7 @@ public class QnaAcceptanceTest extends AcceptanceTest {
         htmlFormDataBuilder.addParameter("title", "수정 제목1");
         htmlFormDataBuilder.addParameter("contents", "수정 내용1");
         HttpEntity<MultiValueMap<String, Object>> request = htmlFormDataBuilder.build();
-        ResponseEntity<String> response = basicAuthTemplate(loginUser).postForEntity(String.format("/question/%d/update", id), request, String.class);
+        ResponseEntity<String> response = basicAuthTemplate(loginUser).exchange(String.format("/question/%d", id),HttpMethod.PUT, request,String.class);
         assertThat(response.getStatusCode(), is(HttpStatus.FOUND));
     }
 
@@ -92,7 +92,7 @@ public class QnaAcceptanceTest extends AcceptanceTest {
     public void 질문_삭제_login() throws  Exception {
         User loginUser = defaultUser();
         long id = 1;
-        ResponseEntity<String> response = basicAuthTemplate(loginUser).getForEntity(String.format("/question/%d/delete", id), String.class);
-        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        ResponseEntity<String> response = basicAuthTemplate(loginUser).exchange(String.format("/question/%d", id),HttpMethod.DELETE, htmlFormDataBuilder.build(), String.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.FOUND));
     }
 }
