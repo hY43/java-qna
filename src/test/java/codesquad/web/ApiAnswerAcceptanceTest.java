@@ -1,5 +1,6 @@
 package codesquad.web;
 
+import codesquad.domain.Answer;
 import codesquad.domain.User;
 import codesquad.dto.QuestionDto;
 import org.junit.Test;
@@ -12,23 +13,29 @@ import static org.junit.Assert.assertThat;
 
 public class ApiAnswerAcceptanceTest extends AcceptanceTest {
 
-    private QuestionDto createQuestionDto() {
-        return new QuestionDto("testTitle1", "testContent1");
-    }
-
-    @Test
-    public void 답변_보기() throws Exception {
-        
+    private Answer createAnswer(User loginUser){
+        return new Answer(loginUser, "testContents");
     }
 
     @Test
     public void 답변_등록() throws Exception {
+        long id = 1;
+        User loginUser = defaultUser();
+        Answer newAnswer = createAnswer(loginUser);
 
+        ResponseEntity response = basicAuthTemplate(loginUser).postForEntity(String.format("/api/question/%d/answer/", id), newAnswer, String.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.CREATED));
     }
 
     @Test
     public void 답변_수정_login() throws  Exception {
+        long id = 1;
+        User loginUser = defaultUser();
+        Answer newAnswer = createAnswer(loginUser);
+        basicAuthTemplate(loginUser).put(String.format("/api/question/%d/answer/", id),newAnswer, Answer.class);
 
+        Answer updatedAnswer = template().getForObject(String.format("/api/question/%d/newAnswer", id), Answer.class);
+        assertThat(updatedAnswer.getContents(), is(newAnswer.getContents()));
     }
 
     @Test
