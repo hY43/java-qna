@@ -40,11 +40,22 @@ public class QnaService {
         return questionRepository.findOne(id);
     }
 
+    public Answer findAnswer(long id) {
+        return answerRepository.findOne(id);
+    }
+
     public Question update(User loginUser, long id, Question updatedQuestion) {
         Question original = questionRepository.findOne(id);
         original.update(loginUser, updatedQuestion);
 
         return questionRepository.save(original);
+    }
+
+    public Answer update(User loginUser, long id, Answer updatedAnswer) {
+        Answer original = answerRepository.findOne(id);
+        original.update(loginUser, updatedAnswer);
+
+        return answerRepository.save(original);
     }
 
     @Transactional
@@ -65,8 +76,7 @@ public class QnaService {
         return answerRepository.save(new Answer(loginUser, contents));
     }
 
-    public Answer deleteAnswer(User loginUser, long id) {
-        // TODO 답변 삭제 기능 구현 
-        return null;
+    public void deleteAnswer(User loginUser, long id) {
+        answerRepository.findOne(id).delete(loginUser);
     }
 }

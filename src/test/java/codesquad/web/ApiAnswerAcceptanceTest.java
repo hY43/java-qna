@@ -18,6 +18,14 @@ public class ApiAnswerAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    public void 답변_확인() throws Exception {
+        long questionId = 1;
+        long answerId = 1;
+        ResponseEntity<String> response = template().getForEntity(String.format("/api/question/%d/answer/%d", questionId, answerId), String.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+    }
+
+    @Test
     public void 답변_등록() throws Exception {
         long id = 1;
         User loginUser = defaultUser();
@@ -29,17 +37,24 @@ public class ApiAnswerAcceptanceTest extends AcceptanceTest {
 
     @Test
     public void 답변_수정_login() throws  Exception {
-        long id = 1;
+        long questionId = 1;
+        long answerId = 1;
         User loginUser = defaultUser();
         Answer newAnswer = createAnswer(loginUser);
-        basicAuthTemplate(loginUser).put(String.format("/api/question/%d/answer/", id),newAnswer, Answer.class);
+        basicAuthTemplate(loginUser).put(String.format("/api/question/%d/answer/%d", questionId, answerId),newAnswer, Answer.class);
 
-        Answer updatedAnswer = template().getForObject(String.format("/api/question/%d/newAnswer", id), Answer.class);
+        Answer updatedAnswer = template().getForObject(String.format("/api/question/%d/answer/%d", questionId, answerId), Answer.class);
         assertThat(updatedAnswer.getContents(), is(newAnswer.getContents()));
     }
 
     @Test
     public void 답변_삭제_login() throws  Exception {
+        long questionId = 1;
+        long answerId = 1;
+        User loginUser = defaultUser();
+        basicAuthTemplate(loginUser).delete(String.format("/api/question/%d/answer/%d", questionId, answerId));
 
+        ResponseEntity<String> response = template().getForEntity(String.format("/api/question/%d/answer/%d", questionId, answerId), String.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 }

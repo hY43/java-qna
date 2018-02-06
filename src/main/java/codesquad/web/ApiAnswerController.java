@@ -22,6 +22,11 @@ public class ApiAnswerController {
     @Resource(name = "qnaService")
     private QnaService qnaService;
 
+    @GetMapping("{id}")
+    public Answer showAnswer(@PathVariable long id) {
+        return qnaService.findAnswer(id);
+    }
+
     @PostMapping("/")
     public ResponseEntity<String> create(@LoginUser User loginUser, @RequestBody Answer answer, @PathVariable Long id) {
         Answer saveAnswer = qnaService.addAnswer(loginUser, id, answer.getContents());
@@ -31,12 +36,12 @@ public class ApiAnswerController {
     }
     
     @PutMapping("{id}")
-    public void update(@LoginUser User loginUser, @PathVariable long id, @RequestBody Answer answer) {
-        //Answer updateAnswer = qnaService.updateAnswer();
+    public Answer update(@LoginUser User loginUser, @PathVariable long id, @RequestBody Answer updatedAnswer) {
+        return qnaService.update(loginUser, id, updatedAnswer);
     }
 
     @DeleteMapping("{id}")
     public void delete(@LoginUser User loginUser, @PathVariable long id) {
-
+        qnaService.deleteAnswer(loginUser, id);
     }
 }

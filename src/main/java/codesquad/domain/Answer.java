@@ -7,6 +7,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Size;
 
+import codesquad.UnAuthorizedException;
 import support.domain.AbstractEntity;
 import support.domain.UrlGeneratable;
 
@@ -42,6 +43,15 @@ public class Answer extends AbstractEntity implements UrlGeneratable {
         this.deleted = false;
     }
 
+    public Answer update(User loginUser, Answer updateAnswer) {
+        if (!isOwner(loginUser)) {
+            throw new UnAuthorizedException();
+        }
+
+        this.contents = updateAnswer.getContents();
+        return this;
+    }
+
     public User getWriter() {
         return writer;
     }
@@ -64,6 +74,14 @@ public class Answer extends AbstractEntity implements UrlGeneratable {
 
     public boolean isDeleted() {
         return deleted;
+    }
+
+    public void delete(User loginUser) {
+        if (!isOwner(loginUser)) {
+            throw new UnAuthorizedException();
+        }
+
+        this.deleted = !this.deleted;
     }
 
     @Override
